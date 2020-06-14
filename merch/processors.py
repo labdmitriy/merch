@@ -1,12 +1,11 @@
 import json
 from collections import OrderedDict
 from pathlib import Path
-from typing import Dict, List
+from typing import List
 
 from .cleaners import clean_data
 from .db import PostgresDB
 from .downloaders import download_data
-
 
 
 def process_data(
