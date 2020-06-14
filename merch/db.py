@@ -1,7 +1,7 @@
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 
-from psycopg2 import sql
+from psycopg2 import OperationalError, sql
 
 from airflow.hooks.postgres_hook import PostgresHook
 
@@ -38,7 +38,7 @@ class PostgresDB:
 
         return file_path
 
-    def create_schema(self, schema_name: str) -> None:
+    def create_schema(self, schema_name: str = 'public') -> None:
         schema_id = sql.Identifier(schema_name)
         sql_query = sql.SQL('CREATE SCHEMA IF NOT EXISTS {}').format(schema_id)
 
@@ -87,9 +87,45 @@ class PostgresDB:
             with conn.cursor() as cur:
                 cur.execute(sql_query)
 
-    def execute(self, sql_query: str) -> None:
+    def execute(self, sql: str) -> None:
         with self.hook.get_conn() as conn:
             with conn.cursor() as cur:
-                cur.execute(sql_query)
-
+                cur.execute(sql)
             conn.commit()
+
+    def query(self, sql: str) -> List:
+        with self.hook.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(sql)
+                results = cur.fetchall()
+
+        return results
+
+    def is_db_alive(self) -> Dict:
+        check_result: Dict = {}
+
+        try:
+            self.query('SELECT 1')
+        except OperationalError as e:
+            print(e)
+            check_result['is_alive'] = False
+            check_result['error_text'] = str(e)
+            return check_result
+
+        check_result['is_alive'] = True
+        return check_result
+
+
+def check_db(
+    conn_id: str,
+    success_task_name: str,
+    failed_task_name: str
+):
+    pg_db = PostgresDB(conn_id)
+
+    check_result = pg_db.is_db_alive()
+
+    if check_result['is_alive']:
+        return success_task_name
+    else:
+        return failed_task_name

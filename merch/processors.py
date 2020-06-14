@@ -45,6 +45,8 @@ def create_dataset(
     temp_tables = json.loads(context['templates_dict']['temp_tables'])
     target_table = json.loads(context['templates_dict']['target_table'])
 
+    pg_db.create_schema('public')
+
     for table_info in temp_tables:
         table_name = table_info['table_name']
         table_file_path = table_info['table_file_path']
