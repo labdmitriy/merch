@@ -114,18 +114,3 @@ class PostgresDB:
 
         check_result['is_alive'] = True
         return check_result
-
-
-def check_db(
-    conn_id: str,
-    success_task_name: str,
-    failed_task_name: str
-):
-    pg_db = PostgresDB(conn_id)
-
-    check_result = pg_db.is_db_alive()
-
-    if check_result['is_alive']:
-        return success_task_name
-    else:
-        return failed_task_name

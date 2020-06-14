@@ -15,10 +15,11 @@ def process_data(
     file_type: str,
     field_names: List,
     clean_map: Dict,
+    check_map: Dict,
     gen_map: Dict,
-    **kwargs
+    error_file_path: Path,
+    **context
 ) -> Path:
-    print()
     file_path = download_data(
         conn_id,
         object_name,
@@ -30,7 +31,10 @@ def process_data(
         file_type,
         field_names,
         clean_map,
-        gen_map
+        check_map,
+        gen_map,
+        error_file_path,
+        **context
     )
     return clean_file_path
 

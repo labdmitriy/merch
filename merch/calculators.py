@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from typing import Dict
 
 DAYS_IN_YEAR = 365.25
-DATE_TIME_FORMAT = '%Y-%m-%d'
+DATETIME_FORMAT = '%Y-%m-%d'
 
 
 def gen_fields(line: Dict, gen_map: Dict) -> Dict:
@@ -16,6 +16,6 @@ def calculate_payment_status(line: Dict) -> str:
 
 def calculate_age(line: Dict) -> int:
     now = datetime.now()
-    birth_date = datetime.strptime(line['birth_date'], DATE_TIME_FORMAT)
+    birth_date = datetime.strptime(line['birth_date'], DATETIME_FORMAT)
     age = (now - birth_date) // timedelta(days=DAYS_IN_YEAR)
     return age

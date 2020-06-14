@@ -4,8 +4,9 @@ from pathlib import Path
 from typing import Dict, List
 
 from .calculators import gen_fields
-from .helpers import apply_func
+from .checkers import BadDataError, check_fields
 from .loaders import load_data
+from .utils import apply_func, gen_file_path
 
 
 def clean_line(line: Dict, clean_map: Dict) -> Dict:
@@ -21,9 +22,12 @@ def clean_data(
     file_type: str,
     field_names: List,
     clean_map: Dict,
-    gen_map: Dict
+    check_map: Dict,
+    gen_map: Dict,
+    error_file_path: Path,
+    **context
 ) -> Path:
-    clean_file_path = file_path.parent/f'{file_path.stem}_clean.csv'
+    clean_file_path = gen_file_path(file_path, '_clean')
     selected_field_names = list(clean_map.keys()) + list(gen_map.keys())
 
     data = load_data(file_path, file_type, field_names)
@@ -36,6 +40,20 @@ def clean_data(
 
         for line in data:
             line = clean_line(line, clean_map)
+
+            try:
+                check_fields(line, check_map)
+            except BadDataError:
+                dag_id = context['task'].dag_id
+                task_id = context['task'].task_id
+
+                error_message = f'Bad data. DAG: {dag_id}, Task: {task_id}'
+
+                with open(error_file_path, 'w') as f:
+                    f.write(error_message)
+
+                raise
+
             line = gen_fields(line, gen_map)
             writer.writerow(line)
 
