@@ -1,3 +1,4 @@
+import json
 from collections import OrderedDict
 from pathlib import Path
 from typing import Dict, List
@@ -5,6 +6,7 @@ from typing import Dict, List
 from .cleaners import clean_data
 from .db import PostgresDB
 from .downloaders import download_data
+
 
 
 def process_data(
@@ -15,8 +17,10 @@ def process_data(
     file_type: str,
     field_names: List,
     clean_map: OrderedDict,
-    gen_map: OrderedDict
+    gen_map: OrderedDict,
+    **kwargs
 ) -> Path:
+    print()
     file_path = download_data(
         conn_id,
         object_name,
@@ -35,11 +39,13 @@ def process_data(
 
 def create_dataset(
     conn_id: str,
-    target_sql: str,
-    target_table: Dict,
-    temp_tables: List
+    **context
 ) -> None:
     pg_db = PostgresDB(conn_id)
+
+    target_sql = context['templates_dict']['target_sql']
+    temp_tables = json.loads(context['templates_dict']['temp_tables'])
+    target_table = json.loads(context['templates_dict']['target_table'])
 
     for table_info in temp_tables:
         table_name = table_info['table_name']
