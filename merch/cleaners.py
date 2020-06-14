@@ -1,6 +1,4 @@
-
 import csv
-from collections import OrderedDict
 from functools import reduce
 from pathlib import Path
 from typing import Dict, List
@@ -22,8 +20,8 @@ def clean_data(
     file_path: Path,
     file_type: str,
     field_names: List,
-    clean_map: OrderedDict,
-    gen_map: OrderedDict
+    clean_map: Dict,
+    gen_map: Dict
 ) -> Path:
     clean_file_path = file_path.parent/f'{file_path.stem}_clean.csv'
     selected_field_names = list(clean_map.keys()) + list(gen_map.keys())

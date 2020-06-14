@@ -29,7 +29,6 @@ def download_table_data(
 ) -> Path:
     pg_db = PostgresDB(conn_id)
     file_path = pg_db.save_table_to_file(table_name, dir_path)
-
     return file_path
 
 

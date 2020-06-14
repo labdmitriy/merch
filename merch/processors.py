@@ -1,7 +1,6 @@
 import json
-from collections import OrderedDict
 from pathlib import Path
-from typing import List
+from typing import Dict, List
 
 from .cleaners import clean_data
 from .db import PostgresDB
@@ -15,8 +14,8 @@ def process_data(
     dir_path: Path,
     file_type: str,
     field_names: List,
-    clean_map: OrderedDict,
-    gen_map: OrderedDict,
+    clean_map: Dict,
+    gen_map: Dict,
     **kwargs
 ) -> Path:
     print()
