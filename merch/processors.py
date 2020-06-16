@@ -17,7 +17,6 @@ def process_data(
     clean_map: Dict,
     check_map: Dict,
     gen_map: Dict,
-    error_file_path: Path,
     **context
 ) -> Path:
     file_path = download_data(
@@ -33,7 +32,6 @@ def process_data(
         clean_map,
         check_map,
         gen_map,
-        error_file_path,
         **context
     )
     return clean_file_path

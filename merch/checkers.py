@@ -32,7 +32,7 @@ def check_fields(line: Dict, check_map: Dict) -> None:
      for field_name, check_funcs in check_map.items()]
 
 
-def check_int_field(field: str) -> None:
+def check_num_field(field: str) -> None:
     try:
         float(field)
     except ValueError as e:

@@ -24,7 +24,6 @@ def clean_data(
     clean_map: Dict,
     check_map: Dict,
     gen_map: Dict,
-    error_file_path: Path,
     **context
 ) -> Path:
     clean_file_path = gen_file_path(file_path, '_clean')
@@ -49,8 +48,9 @@ def clean_data(
 
                 error_message = f'Bad data. DAG: {dag_id}, Task: {task_id}'
 
-                with open(error_file_path, 'w') as f:
-                    f.write(error_message)
+                task_instance = context['ti']
+                task_instance.xcom_push(key='bad_data_error_message',
+                                        value=error_message)
 
                 raise
 
