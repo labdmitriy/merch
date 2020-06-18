@@ -2,6 +2,8 @@
 ## Файлы
 - merch/ 
   - calculators.py - генерация новых полей
+  - callbacks.py - обработка событий
+  - checkers.py - проверка данных на качество
   - cleaners.py - очистка данных
   - db.py - взаимодействие с БД
   - downloaders.py - скачивание данных
